@@ -41,12 +41,19 @@ describe("Test Servipag", function(){
 		done();
 	});
 
-	it("Comprueba el primer xml", function (done) {
+	it("Comprueba generar el primer xml", function (done) {
 		var servipag = Servipag.create();
 		var xml1 = servipag.generarXml1(data);
 		assert.equal(xml1, "<?xml version='1.0' encoding='ISO-8859-1'?><Servipag><Header><FirmaEPS>PjywWBrcmIScfe82NUwNiHSzhVs0CwtHGwlRBOiQiNONLpsHz1jvhhU9T20aZxhVJD4waPa5hXlX95FYUdDwsSm6lDguLk5JDWxQHlwkVMenqrhJ+2HDXGqg8DNqNXD0JtAoba0eh56Krs2H2Y1q2WJgF38JidcchekdoTXIvlw=</FirmaEPS><CodigoCanalPago>2</CodigoCanalPago><IdTxPago>23</IdTxPago><EmailCliente>jp@test.com</EmailCliente><NombreCliente>Juan Perez</NombreCliente><RutCliente>11111111-1</RutCliente><FechaPago>23012016</FechaPago><MontoTotalDeuda>23000</MontoTotalDeuda><NumeroBoletas>1</NumeroBoletas><Version>2</Version></Header><Documentos><IdSubTx>6786</IdSubTx><Identificador>1231</Identificador><Boleta>1</Boleta><Monto>23000</Monto><FechaVencimiento>31122016</FechaVencimiento></Documentos></Servipag>");
 		done();
 	});
+
+	it("Comprueba generar el tercer xml", function (done) {
+		var servipag = Servipag.create();
+		var xml3 = servipag.generarXml3({CodigoRetorno: 0, MensajeRetorno: 'Transacción OK'});
+		assert.equal(xml3, "<?xml version='1.0' encoding='ISO-8859-1'?><Servipag><CodigoRetorno>0</CodigoRetorno><MensajeRetorno>Transacción OK</MensajeRetorno></Servipag>");
+		done();
+	})
 
 	// it("Comprueba xml4", function (done) {
 	// 	var servipag = Servipag.create();
