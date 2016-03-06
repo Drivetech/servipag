@@ -22,7 +22,7 @@ class Servipag {
     this.rutaLlavePublica = config.rutallavepublica;
     this.ordenfirma = config.ordenfirma;
     this.ordennodoxml2 = config.ordennodoxml2;
-    this.ordenodoxml4 = config.ordennodoxml4;
+    this.ordennodoxml4 = config.ordennodoxml4;
     this.firma = '';
     this.xml1 = [];
     this.xml1 = {
@@ -49,24 +49,30 @@ class Servipag {
   }
 
   /**
-   * Validar xml2.
-   * @param {String} xml
+   * Valida el xml
+   * @param  {String} xml
+   * @param  {Array} order
    * @return {Json}
    */
-  validarXml2(xml, cb) {
+  _validarXml(xml, order, cb) {
     parseString(xml, (err, obj) => {
       if (err) return cb(err);
-      const cadena = this.ordennodoxml2.map(x => {
-        if (obj.Servipag.hasOwnProperty(x)) {
-          return obj.Servipag[x];
-        }
-      }).join('');
-      if (this.desencriptar(cadena, obj.Servipag.FirmaServipag)) {
+      const string = this._concat(obj.Servipag, order);
+      if (this.desencriptar(string, obj.Servipag.FirmaServipag)) {
         cb(null, {exito: true, mensaje: obj});
       } else {
         cb(null, {exito: false, mensaje: 'Firma no valida'});
       }
     });
+  }
+
+  /**
+   * Validar xml2.
+   * @param {String} xml
+   * @return {Json}
+   */
+  validarXml2(xml, cb) {
+    this._validarXml(xml, this.ordennodoxml2, cb);
   }
 
   /**
@@ -84,20 +90,9 @@ class Servipag {
    * @return {Json}
    */
   validarXml4(xml, cb) {
-    parseString(xml, (err, obj) => {
-      if (err) return cb(err);
-      const cadena = this.ordenodoxml4.map(x => {
-        if (obj.Servipag.hasOwnProperty(x)) {
-          return obj.Servipag[x];
-        }
-      }).join('');
-      if (this.desencriptar(cadena, obj.Servipag.FirmaServipag)) {
-        cb(null, {exito: true, mensaje: obj});
-      } else {
-        cb(null, {exito: false, mensaje: 'Firma no valida'});
-      }
-    });
+    this._validarXml(xml, this.ordennodoxml4, cb);
   }
+
   /**
    * Encripta y firma la cadena enviada.
    * @param  {String}
@@ -123,17 +118,27 @@ class Servipag {
 
     return resultado;
   }
+
+  /**
+   * Concatena los datos
+   * @param  {[type]}
+   * @return {[type]}
+   */
+  _concat(data, order) {
+    return order.map(x => {
+      if (data.hasOwnProperty(x)) {
+        return data[x];
+      }
+    }).join('');
+  }
+
   /**
    * Concatena los datos
    * @param  {[type]}
    * @return {[type]}
    */
   concatFirma(data) {
-    return this.ordenfirma.map(x => {
-      if (data.hasOwnProperty(x)) {
-        return data[x];
-      }
-    }).join('');
+    return this._concat(data, this.ordenfirma);
   }
 }
 
