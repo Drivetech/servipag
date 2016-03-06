@@ -20,23 +20,23 @@ var data = {
 			EmailCliente: "jp@test.com",
 			NombreCliente: "Juan Perez",
 			RutCliente: "11111111-1",
-			Version: 2			
+			Version: 2
 		};
 var xml4ficticio = '<?xml version="1.0" encoding="ISO8859-1"?><Servipag><FirmaServipag>asdhbasduasdkasdnasd</FirmaServipag><IdTrxServipag>123456</IdTrxServipag><IdTxCliente>78910</IdTxCliente><EstadoPago>1</EstadoPago><MensajePago>Completado</MensajePago></Servipag>' ;
 var resultadoxml4ficticio = {FirmaServipag : '12345678910', IdTrxServipag: '123456', IdTxCliente: '78910', EstadoPago: '1', MensajePago: 'Completado'};
 
 describe("Test Servipag", function(){
 	it("Valida el concatenar para la firma", function (done){
-		var servipag = Servipag.create();		
+		var servipag = Servipag.create();
 		var concatenado = servipag.concatFirma(data);
 		assert.equal(concatenado, "1223012016311220161231678623000230001");
 		done();
 	});
 
 	it("Firma y comprueba el firmado", function (done){
-		var servipag = Servipag.create();		
+		var servipag = Servipag.create();
 		var concatenado = servipag.concatFirma(data);
-		var firma = servipag.encripta(concatenado);		
+		var firma = servipag.encripta(concatenado);
 		assert.ok(firma);
 		done();
 	});
@@ -58,7 +58,7 @@ describe("Test Servipag", function(){
 	// it("Comprueba xml4", function (done) {
 	// 	var servipag = Servipag.create();
 	// 	var xml4 = servipag.validarXml4(xml4ficticio);
-	// 	console.log(xml4.mensaje);		
+	// 	console.log(xml4.mensaje);
 	// 	assert.deepEqual(xml4.mensaje, resultadoxml4ficticio);
 	// 	done();
 	// });
@@ -66,11 +66,11 @@ describe("Test Servipag", function(){
 	it("Comprueba desencriptar llave publica", function (done) {
 		//cadena para firmar que se formaria con los valores que llegarían en resultadoxml4ficticio
 		var cadena = '12345678910';
-		//firma que haría servipag		
-		var llavepublica = ursa.createPublicKey(fs.readFileSync(config.rutallavepublica));
-		var firma = llavepublica.sign('md5', cadena, 'utf8', 'base64');
-		console.log(fima);
-		//verificación que haría el comercio		
+		//firma que haría servipag
+		var llaveprivada = ursa.createPrivateKey(fs.readFileSync(config.rutallaveprivada));
+		var firma = llaveprivada.sign('md5', cadena, 'utf8', 'base64');
+		// console.log(firma);
+		//verificación que haría el comercio
 		var servipag = Servipag.create();
 		var resultado = servipag.desencriptar(cadena, firma);
 
