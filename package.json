@@ -34,7 +34,7 @@
     "async": "^1.5.2",
     "lodash": "^4.13.1",
     "ursa": "^0.9.4",
-    "xml2js": "^0.4.16"
+    "xml2js": "^0.4.17"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
