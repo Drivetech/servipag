@@ -1,13 +1,14 @@
 'use strict';
 
-import async from 'async';
-import config from '../lib/config';
-import {expect} from 'chai';
-import fs from 'fs';
-import {parseString, Builder} from 'xml2js';
-import path from 'path';
-import Servipag from '../lib';
-import ursa from 'ursa';
+const apply = require('async/apply');
+const waterfall = require('async/waterfall');
+const config = require('../src/config');
+const expect = require('chai').expect;
+const fs = require('fs');
+const xml2js = require('xml2js');
+const path = require('path');
+const Servipag = require('../src');
+const ursa = require('ursa');
 
 const data = {
   FirmaEPS: 'PjywWBrcmIScfe82NUwNiHSzhVs0CwtHGwlRBOiQiNONLpsHz1jvhhU9T20aZxhVJD4waPa5hXlX95FYUdDwsSm6lDguLk5JDWxQHlwkVMenqrhJ+2HDXGqg8DNqNXD0JtAoba0eh56Krs2H2Y1q2WJgF38JidcchekdoTXIvlw=',
@@ -51,10 +52,10 @@ describe('Test Servipag', function(){
 
   it('Comprueba generar el primer xml', (done) => {
     const xml = servipag.generarXml1(data);
-    const builder = new Builder(builderOptions);
-    async.waterfall([
-      async.apply(fs.readFile, path.join(__dirname, 'xml', '1.xml')),
-      parseString
+    const builder = new xml2js.Builder(builderOptions);
+    waterfall([
+      apply(fs.readFile, path.join(__dirname, 'xml', '1.xml')),
+      xml2js.parseString
     ], (err, obj) => {
       if (err) return done(err);
       expect(xml).to.eql(builder.buildObject(obj));
@@ -64,10 +65,10 @@ describe('Test Servipag', function(){
 
   it('Comprueba generar el tercer xml', (done) => {
     const xml = servipag.generarXml3({CodigoRetorno: 0, MensajeRetorno: 'Transacción OK'});
-    const builder = new Builder(builderOptions);
-    async.waterfall([
-      async.apply(fs.readFile, path.join(__dirname, 'xml', '3.xml')),
-      parseString
+    const builder = new xml2js.Builder(builderOptions);
+    waterfall([
+      apply(fs.readFile, path.join(__dirname, 'xml', '3.xml')),
+      xml2js.parseString
     ], (err, obj) => {
       if (err) return done(err);
       expect(xml).to.eql(builder.buildObject(obj));
@@ -77,8 +78,8 @@ describe('Test Servipag', function(){
 
   // it('Comprueba xml4', (done) => {
   //   const resultadoxml4ficticio = {FirmaServipag : '12345678910', IdTrxServipag: '123456', IdTxCliente: '78910', EstadoPago: '1', MensajePago: 'Completado'};
-  //   async.waterfall([
-  //     async.apply(fs.readFile, path.join(__dirname, 'xml', '4.xml')),
+  //   waterfall([
+  //     apply(fs.readFile, path.join(__dirname, 'xml', '4.xml')),
   //     servipag.validarXml4
   //   ], (err, xml4) => {
   //     if (err) return done(err);

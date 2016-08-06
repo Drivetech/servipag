@@ -1,6 +1,6 @@
 'use strict';
 
-import path from 'path';
+const path = require('path');
 
 module.exports = {
   rutallaveprivada: process.env.RUTALLAVEPRIVADA || path.join(__dirname, '..', 'test', 'llaves', 'privadaprueba.key'),

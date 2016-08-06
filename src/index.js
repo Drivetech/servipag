@@ -1,17 +1,17 @@
 'use strict';
 
-import config from './config';
-import fs from 'fs';
-import {parseString, Builder} from 'xml2js';
-import {pick} from 'lodash';
-import ursa from 'ursa';
+const config = require('./config');
+const fs = require('fs');
+const xml2js = require('xml2js');
+const pick = require('lodash/pick');
+const ursa = require('ursa');
 
 const builderOptions = {
   rootName: 'Servipag',
   renderOpts: {pretty: false},
   xmldec: {encoding: 'ISO-8859-1', standalone: null}
 };
-const builder = new Builder(builderOptions);
+const builder = new xml2js.Builder(builderOptions);
 
 class Servipag {
   /**
@@ -55,7 +55,7 @@ class Servipag {
    * @return {Json}
    */
   _validarXml(xml, order, cb) {
-    parseString(xml, (err, obj) => {
+    xml2js.parseString(xml, (err, obj) => {
       if (err) return cb(err);
       const string = this._concat(obj.Servipag, order);
       if (this.desencriptar(string, obj.Servipag.FirmaServipag)) {
